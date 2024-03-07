@@ -1,64 +1,81 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import useCustomNavigate  from '../../hooks/UseNavigate';
-import User from "../../types/User"
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import useCustomNavigate from "../../hooks/UseNavigate";
+import User from "../../types/User";
+import { useQuery } from "react-query";
+import React, { useContext, useState, useEffect } from "react";
+import { UserContext } from "../../context/UserContext";
 
-import {checkUserExists} from "../../api/CheckUserExists"
+import * as userRequesrts from "../../api/UserRequests";
 
 export default function LoginPage() {
 
-  const navigate = useCustomNavigate ();
+  const navigate = useCustomNavigate();
+
+  const [user, setUser] = useState<User | undefined>();
+  const { setUser: setContextUser } = useContext(UserContext);
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget);
 
+    // const {error, data } = useQuery('',()=> userRequesrts.checkUserExists({
+    //   email: formData.get('email') as string,
+    //   password: formData.get('password') as string,
+    // }));
 
-    const user: User | undefined = await checkUserExists({
-      email: data.get('email') as string,
-      password: data.get('password') as string,
+    const userData: User | undefined = await userRequesrts.checkUserExists({
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
     });
-    
 
-    if(!user){
+    if (!userData) {
       if (
-          window.confirm(
-            "You don't have an account yet. do you want to create a new one?"
-          )
-        ) {
-          navigate("/Register");
-        }
+        window.confirm(
+          "You don't have an account yet. do you want to create a new one?"
+        )
+      ) {
+        navigate("/Register");
+      }
     } else {
+      console.log(userData);
+      console.log(user);
+      await setUser((userData as User) ?? null);
+      setContextUser((userData as User) ?? null);
       navigate("/Home");
     }
-
   };
 
   return (
       <Container component="main" maxWidth="xs">
+        <h1>{user ? user.name : "not exists"}</h1>
         <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          </Avatar>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -79,7 +96,7 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
             />
-            
+
             <Button
               type="submit"
               fullWidth

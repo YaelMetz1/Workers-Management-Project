@@ -1,10 +1,10 @@
 export default interface User{
     id: number,
-    username: string,
-    password: string,
+    name: string,
     email: string,
-    fullName: string,
+    password: string,
     phoneNumber: string,
-    city: string,
-    is_admin: boolean
+    jobTitle : string,
+    salary: number,
+    isAdmin: boolean
 }

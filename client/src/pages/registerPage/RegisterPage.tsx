@@ -7,21 +7,36 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { postNewUser } from "../../api/PostNewUser";
+import * as userRequests from "../../api/UserRequests";
 import useCustomNavigate from "../../hooks/UseNavigate";
+import { useQuery } from "react-query";
 
 export default function RegisterPage() {
   const navigate = useCustomNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    await postNewUser({
-      email: data.get("email") as string,
-      password: data.get("password") as string,
-      fullName: data.get("fullName") as string,
-    });
-    navigate("/");
+    const formData = new FormData(event.currentTarget);
+console.log({
+  email: formData.get("email") as string,
+  password: formData.get("password") as string,
+});
+    try {
+      await userRequests.register({
+        email: formData.get("email") as string,
+        password: formData.get("password") as string,
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Error registering:", error);
+    }
+
+    // useQuery('', () => userRequesrts.register({
+    //   email: formData.get('email') as string,
+    //   password: formData.get('password') as string,
+    // }));
+
+    // navigate("/");
   };
 
   return (
@@ -41,16 +56,6 @@ export default function RegisterPage() {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="fullName"
-                label="Full Name"
-                name="fullName"
-                autoComplete="full-name"
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 required
@@ -86,3 +91,8 @@ export default function RegisterPage() {
     </Container>
   );
 }
+
+// function useQuery(arg0: string, arg1: () => Promise<import("../../types/User").default | undefined>): { error: any; data: any; } {
+//   throw new Error("Function not implemented.");
+// }
+
