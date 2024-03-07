@@ -10,7 +10,7 @@ import Container from "@mui/material/Container";
 import useCustomNavigate from "../../hooks/UseNavigate";
 import User from "../../types/User";
 import { useQuery } from "react-query";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
 import * as userRequesrts from "../../api/UserRequests";
@@ -19,9 +19,7 @@ export default function LoginPage() {
 
   const navigate = useCustomNavigate();
 
-  const [user, setUser] = useState<User | undefined>();
-  const { setUser: setContextUser } = useContext(UserContext);
-
+  const { setUser} = useContext(UserContext);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -46,17 +44,13 @@ export default function LoginPage() {
         navigate("/Register");
       }
     } else {
-      console.log(userData);
-      console.log(user);
-      await setUser((userData as User) ?? null);
-      setContextUser((userData as User) ?? null);
+      setUser((userData as User) ?? null);
       navigate("/Home");
     }
   };
 
   return (
       <Container component="main" maxWidth="xs">
-        <h1>{user ? user.name : "not exists"}</h1>
         <CssBaseline />
         <Box
           sx={{

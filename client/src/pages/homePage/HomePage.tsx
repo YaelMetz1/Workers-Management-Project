@@ -1,7 +1,6 @@
-import { Container, Grid, List, ListItem, ListItemText, Typography } from "@mui/material";
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
-import User from "../../types/User";
+import { Card, CardContent, Typography, CardActions, Button } from "@mui/material";
 
 export default function HomePage() {
 
@@ -9,22 +8,25 @@ export default function HomePage() {
 
 
 
-    return (<Container  maxWidth="xs">
-    <Grid container spacing={2}>
-    <Grid item xs={12} md={6}>
-      <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-        {(user)? user.name: "error"}
-      </Typography>
-        <List>
-            <ListItem>
-              <ListItemText
-                primary="Single-line item"
-              />
-            </ListItem>,
-        </List>
-    </Grid>
-    </Grid>
-    </Container>);
-
-}
-
+    return (
+      <Card sx={{ minWidth: 275 }}>
+        <CardContent>
+        <Typography variant="h4" component="div">
+          Name: {user?.name}
+        </Typography>
+          <Typography variant="body2">
+           Email: {user?.email}
+          </Typography>
+          <Typography variant="body2">
+           Phone Number: {user?.phoneNumber}
+          </Typography>
+          <Typography variant="body2">
+           Job Title: {user?.jobTitle}
+          </Typography>
+          <Typography variant="body2">
+           Salary: {user?.salary}
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
