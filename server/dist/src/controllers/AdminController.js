@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,12 +33,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteEmployee = exports.updateEmployee = exports.addEmployee = exports.getEmployees = void 0;
-const client_1 = require("@prisma/client");
+const adminServices = __importStar(require("../services/AdminServices"));
 function getEmployees(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
         try {
-            const employees = yield prisma.employee.findMany();
+            const employees = adminServices.getEmployees();
             if (employees) {
                 res.status(200).json(employees);
             }
@@ -26,79 +48,38 @@ function getEmployees(req, res) {
         catch (error) {
             res.status(400).json({ Message: "Error getting employees" });
         }
-        finally {
-            yield prisma.$disconnect();
-        }
     });
 }
 exports.getEmployees = getEmployees;
 function addEmployee(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
         try {
-            const user = yield prisma.employee.create({
-                data: {
-                    name: req.body.name,
-                    email: req.body.email,
-                    phoneNumber: req.body.phoneNumber,
-                    jobTitle: req.body.jobTitle,
-                    salary: req.body.salary,
-                },
-            });
+            const user = yield adminServices.addEmployee(req.body);
         }
         catch (error) {
             res.status(400).json({ Message: "Error inserting employee" });
-        }
-        finally {
-            yield prisma.$disconnect();
         }
     });
 }
 exports.addEmployee = addEmployee;
 function updateEmployee(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
         try {
-            const updateUser = yield prisma.employee.update({
-                where: {
-                    email: req.body.email,
-                },
-                //find a better way
-                data: {
-                    name: req.body.name,
-                    password: req.body.password,
-                    email: req.body.email,
-                    phoneNumber: req.body.phoneNumber,
-                    jobTitle: req.body.jobTitle,
-                    salary: req.body.salary,
-                    isAdmin: req.body.isAdmin,
-                },
-            });
+            const updateUser = yield adminServices.updateEmployee(req.body);
         }
         catch (error) {
             res.status(400).json({ Message: "Error updating user" });
-        }
-        finally {
-            yield prisma.$disconnect();
         }
     });
 }
 exports.updateEmployee = updateEmployee;
 function deleteEmployee(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
         try {
-            const deleteUser = yield prisma.employee.delete({
-                where: {
-                    id: +(req.params.id),
-                },
-            });
+            const deleteUser = yield adminServices.deleteEmployee(+(req.params.id));
         }
         catch (error) {
             res.status(400).json({ Message: "Error deleting employee" });
-        }
-        finally {
-            yield prisma.$disconnect();
         }
     });
 }
