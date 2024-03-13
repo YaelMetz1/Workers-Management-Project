@@ -3,9 +3,9 @@ import User from "../types/User";
 
 const API_URL = "http://localhost:4000/api/admin";
 
-export async function getAllUsers(){
+export async function getAllUsers() {
   try {
-    const response: AxiosResponse = await axios.get(API_URL + "/getEmployees");
+    const response = await axios.get(API_URL + "/getEmployees");
 
     if (response) {
       return response.data as User[];
@@ -15,36 +15,51 @@ export async function getAllUsers(){
   }
 }
 
-export async function addEmployee(employee: { name: string, email: string; phoneNumber: string, jobTitle: string, salary: number }){
+export async function addEmployee(employee: {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  jobTitle: string;
+  salary: number;
+}): Promise<User | undefined> {
   try {
-    const response: AxiosResponse = await axios.post(API_URL + "/addEmployee", employee);
-
+    const response = await axios.post(
+      API_URL + "/addEmployee",
+      employee
+    );
     if (response) {
-      return;
+      return response.data as User;
     }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
-export async function updateEmployee(employee: { name: string, email: string; phoneNumber: string, jobTitle: string, salary: number }){
+export async function updateEmployee(employee: {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  jobTitle: string;
+  salary: number;
+}) : Promise<User|undefined>{
   try {
-    const response: AxiosResponse = await axios.patch(API_URL + "/updateEmployee", employee);
+    const response: AxiosResponse = await axios.patch(
+      API_URL + "/updateEmployee",
+      employee
+    );
 
     if (response) {
-      return;
+      return response.data as User;
     }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
-export async function deleteEmployee(id: number){
-
-   await axios.delete(API_URL + `/deleteEmployee/${id}`)
-    // .then(()=>{
-    // })
-    // .catch(error=>{
-
-    // })
+export async function deleteEmployee(id: number) {
+  try {
+    await axios.delete(API_URL + `/deleteEmployee/${id}`);
+  } catch (error) {
+    console.error("Error deleting data:", error);
   }
+}

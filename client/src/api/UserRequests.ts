@@ -7,17 +7,6 @@ export async function checkUserExists(user: {
   email: string;
   password: string;
 }): Promise<User | undefined> {
-  // const requestOptions = {
-  //   method: "POST",
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(user),
-  // };
-
-  // const response = await fetch(API_URL + "/verification", requestOptions);
-  // if (!response.ok) {
-  //   throw new Error("Network response was not ok");
-  // }
-  // return response.json();
 
   try {
     const response: AxiosResponse = await axios.post(
@@ -34,23 +23,13 @@ export async function checkUserExists(user: {
 }
 
 //An employee is registered in the system
-export async function register(user: { email: string; password: string }) {
-  console.log(user);
+export async function register(user: { email: string; password: string }): Promise<User|undefined>  {
   try {
-    await axios.post(API_URL + "/register", user);
-  } catch (error) {
+    const response: AxiosResponse= await axios.post(API_URL + "/register", user);
+    if (response) {
+      return response.data as User;
+    }
+    } catch (error) {
     console.error(" Error registering user", error);
   }
-
-  // const requestOptions = {
-  //   method: "POST",
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(user),
-  // };
-
-  // const response = await fetch(API_URL + "/register", requestOptions);
-  // if (!response.ok) {
-  //   throw new Error("Error registering user");
-  // }
-  // return response.json();
 }

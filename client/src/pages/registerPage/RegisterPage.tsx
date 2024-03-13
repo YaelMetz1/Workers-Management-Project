@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import * as userRequests from "../../api/UserRequests";
 import useCustomNavigate from "../../hooks/UseNavigate";
-import { useQuery } from "react-query";
+import User from "../../types/User";
 
 export default function RegisterPage() {
   const navigate = useCustomNavigate();
@@ -17,26 +17,11 @@ export default function RegisterPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-console.log({
-  email: formData.get("email") as string,
-  password: formData.get("password") as string,
-});
-    try {
-      await userRequests.register({
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
-      });
-      navigate("/");
-    } catch (error) {
-      console.error("Error registering:", error);
-    }
-
-    // useQuery('', () => userRequesrts.register({
-    //   email: formData.get('email') as string,
-    //   password: formData.get('password') as string,
-    // }));
-
-    // navigate("/");
+    const userData: User | undefined = await userRequests.register({
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    });
+    navigate("/");
   };
 
   return (
@@ -91,8 +76,3 @@ console.log({
     </Container>
   );
 }
-
-// function useQuery(arg0: string, arg1: () => Promise<import("../../types/User").default | undefined>): { error: any; data: any; } {
-//   throw new Error("Function not implemented.");
-// }
-

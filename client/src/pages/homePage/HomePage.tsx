@@ -5,9 +5,12 @@ import {
   CardContent,
   Typography
 } from "@mui/material";
+import useCustomNavigate from "../../hooks/UseNavigate";
 
 export default function HomePage() {
-  const { user, setUser } = useContext(UserContext);
+  const navigate = useCustomNavigate();
+
+  const { user} = useContext(UserContext);
 
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -21,6 +24,9 @@ export default function HomePage() {
         </Typography>
         <Typography variant="body2">Job Title: {user?.jobTitle}</Typography>
         <Typography variant="body2">Salary: {user?.salary}</Typography>
+        {(user?.isAdmin)? <button onClick={() => {navigate("/Admin")}}>
+          see all employess
+        </button>: null}
       </CardContent>
     </Card>
   );

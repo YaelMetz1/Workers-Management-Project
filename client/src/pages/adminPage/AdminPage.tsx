@@ -1,16 +1,22 @@
 import React, {useEffect, useState} from "react";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import * as adminRequests from "../../api/AdminRequests"
-import useCustomNavigate from "../../hooks/UseNavigate";
+import EditEmployee from "./shared/editEmployee/EditEmployee"
+import AddEmployee from "./shared/addEmployee/AddEmployee";
 
 export default function AdminPage() {
 
 
-  const navigate = useCustomNavigate();
+
+  const [rows, setRows] = useState<any[]>([]); // Initialize rows state
+  const [editDialog, setEditDialog] =useState(false);
+  const [addDialog, setAddDialog] =useState(false);
+  const [userDetails, setUserDetails] =useState();
+
 
 const columns: GridColDef[]=[
     { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'name', headerName: 'Name', width: 100 },
+    { field: 'name', headerName: 'Name', width: 170 },
     { field: 'email', headerName: 'Email', width: 200 },
     { field: 'phoneNumber', headerName: 'PhoneNumber', width: 130},
     { field: 'jobTitle', headerName: 'JobTitle', width: 200},
@@ -28,32 +34,34 @@ const columns: GridColDef[]=[
     },
   ];
 
-  const [rows, setRows] = useState<any[]>([]); // Initialize rows state
+  const fetchData = async ()=> {
+    const data = await adminRequests.getAllUsers();
+    setRows(data || []); 
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      const data = await adminRequests.getAllUsers();
-      setRows(data || []); 
-    }
-
     fetchData(); 
   }, []); 
   
   const handleUpdate = async (row: any) => {
-    await adminRequests.updateEmployee({
-      name: row.name as string,
-      email: row.email as string,
-      phoneNumber: row.phoneNumber as string,
-      jobTitle: row.jobTitle as string,
-      salary: +(row.salary as string),
-    })
+    setUserDetails(row);
+    setEditDialog(true);
   };
 
   const handleDelete = async (id: number) => {
     await adminRequests.deleteEmployee(id);
+    fetchData();
   };
 
-  
+  const handleToggleAddDialog = () => {
+    setAddDialog(!addDialog);
+    fetchData();
+  };
+
+  const handleToggleEditDialog = () => {
+    setEditDialog(!editDialog);
+    fetchData();
+  };
 
     return (
     <div>
@@ -67,7 +75,9 @@ const columns: GridColDef[]=[
         // }}
         // pageSizeOptions={[5, 10]}
       />
-      <button onClick={() => {navigate("/newEmployee")}}>Add Employee</button>
-      </div>);
+      <button onClick={() => setAddDialog(true)}>Add Employee</button>
+      {addDialog && <AddEmployee onClose={handleToggleAddDialog} />}
+      {editDialog && <EditEmployee user={userDetails} onClose={handleToggleEditDialog} />}
+      </div>)
 
 } 
