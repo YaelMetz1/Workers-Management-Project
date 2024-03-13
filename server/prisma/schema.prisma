@@ -19,7 +19,16 @@ model Employee {
   email        String           @unique
   password     String?
   phoneNumber  String
-  jobTitle     String
+  job          Job              @relation(fields: [jobId], references: [id])
+  jobId        Int
   salary       Int
   isAdmin      Boolean          @default(false)
+}
+
+model Job {
+  id             Int            @id @default(autoincrement())
+  title          String
+  department     String
+  location       String
+  employees      Employee[]
 }

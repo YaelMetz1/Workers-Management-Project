@@ -57,6 +57,7 @@ function register(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const updateUser = yield userServices.updateUserPassword(req.body);
+            res.status(200).json(updateUser);
         }
         catch (error) {
             res.status(400).json({ Message: "Error inserting user" });

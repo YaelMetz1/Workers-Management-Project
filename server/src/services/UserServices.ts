@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../Client"
 
 export async function getUser(userdetails: {
   email: string;
   password: string;
 }) {
-  const prisma = new PrismaClient();
-  try {
     const user = prisma.employee.findFirst({
       where: {
         email: userdetails.email,
@@ -13,19 +11,13 @@ export async function getUser(userdetails: {
       },
     });
     return user;
-  } catch (error) {
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
+
 }
 
 export async function updateUserPassword(userdetails: {
   email: string;
   password: string;
 }) {
-  const prisma = new PrismaClient();
-  try {
     const user = prisma.employee.update({
       where: {
         email: userdetails.email,
@@ -35,9 +27,5 @@ export async function updateUserPassword(userdetails: {
       },
     });
     return user;
-  } catch (error) {
-    throw error;
-  } finally {
-    await prisma.$disconnect();
-  }
+
 }

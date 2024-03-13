@@ -3,7 +3,7 @@ import * as adminServices from "../services/AdminServices"
 
 export async function getEmployees(req: Request, res: Response) {
   try {
-    const employees = adminServices.getEmployees();
+    const employees = await adminServices.getEmployees();
     if (employees) {
       res.status(200).json(employees);
     } else {
@@ -16,7 +16,8 @@ export async function getEmployees(req: Request, res: Response) {
 
 export async function addEmployee(req: Request, res: Response) {
   try {
-    const user = await adminServices.addEmployee(req.body);
+    const employee = await adminServices.addEmployee(req.body);
+    res.status(200).json(employee);
   } catch (error) {
     res.status(400).json({ Message: "Error inserting employee" });
   }
@@ -25,6 +26,7 @@ export async function addEmployee(req: Request, res: Response) {
 export async function updateEmployee(req: Request, res: Response) {
   try {
     const updateUser = await adminServices.updateEmployee(req.body);
+    res.status(200).json(updateUser);
   } catch (error) {
     res.status(400).json({ Message: "Error updating user" });
   }

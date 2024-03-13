@@ -11,47 +11,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserPassword = exports.getUser = void 0;
 const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 function getUser(userdetails) {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
-        try {
-            const user = prisma.employee.findFirst({
-                where: {
-                    email: userdetails.email,
-                    password: userdetails.password,
-                },
-            });
-            return user;
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            yield prisma.$disconnect();
-        }
+        const user = prisma.employee.findFirst({
+            where: {
+                email: userdetails.email,
+                password: userdetails.password,
+            },
+        });
+        return user;
     });
 }
 exports.getUser = getUser;
 function updateUserPassword(userdetails) {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
-        try {
-            const user = prisma.employee.update({
-                where: {
-                    email: userdetails.email,
-                },
-                data: {
-                    password: userdetails.password,
-                },
-            });
-            return user;
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            yield prisma.$disconnect();
-        }
+        const user = prisma.employee.update({
+            where: {
+                email: userdetails.email,
+            },
+            data: {
+                password: userdetails.password,
+            },
+        });
+        return user;
     });
 }
 exports.updateUserPassword = updateUserPassword;

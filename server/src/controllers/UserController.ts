@@ -20,6 +20,7 @@ export async function verification(req: Request, res: Response) {
 export async function register(req: Request, res: Response) {
   try {
     const updateUser = await userServices.updateUserPassword(req.body);
+    res.status(200).json(updateUser);
   } catch (error) {
     res.status(400).json({ Message: "Error inserting user" });
   }

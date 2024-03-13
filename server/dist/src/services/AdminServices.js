@@ -11,43 +11,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteEmployee = exports.updateEmployee = exports.addEmployee = exports.getEmployees = void 0;
 const client_1 = require("@prisma/client");
+const prisma = new client_1.PrismaClient();
 function getEmployees() {
     return __awaiter(this, void 0, void 0, function* () {
-        const prisma = new client_1.PrismaClient();
-        try {
-            const employees = yield prisma.employee.findMany();
-            return employees;
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            yield prisma.$disconnect();
-        }
+        const employees = yield prisma.employee.findMany({
+            orderBy: {
+                id: "asc",
+            },
+        });
+        return employees;
     });
 }
 exports.getEmployees = getEmployees;
 function addEmployee(employeeData) {
     return __awaiter(this, void 0, void 0, function* () {
         const prisma = new client_1.PrismaClient();
-        try {
-            const user = yield prisma.employee.create({
-                data: {
-                    name: employeeData.name,
-                    email: employeeData.email,
-                    phoneNumber: employeeData.phoneNumber,
-                    jobTitle: employeeData.jobTitle,
-                    salary: employeeData.salary,
-                },
-            });
-            return user;
-        }
-        catch (error) {
-            throw error;
-        }
-        finally {
-            yield prisma.$disconnect();
-        }
+        const user = yield prisma.employee.create({
+            data: {
+                name: employeeData.name,
+                email: employeeData.email,
+                phoneNumber: employeeData.phoneNumber,
+                jobTitle: employeeData.jobTitle,
+                salary: employeeData.salary,
+            },
+        });
+        return user;
     });
 }
 exports.addEmployee = addEmployee;
@@ -70,9 +58,6 @@ function updateEmployee(employeeData) {
             });
             return updateUser;
         }
-        catch (error) {
-            throw error;
-        }
         finally {
             yield prisma.$disconnect();
         }
@@ -88,9 +73,6 @@ function deleteEmployee(employeeId) {
                     id: employeeId,
                 },
             });
-        }
-        catch (error) {
-            throw error;
         }
         finally {
             yield prisma.$disconnect();

@@ -37,7 +37,7 @@ const adminServices = __importStar(require("../services/AdminServices"));
 function getEmployees(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const employees = adminServices.getEmployees();
+            const employees = yield adminServices.getEmployees();
             if (employees) {
                 res.status(200).json(employees);
             }
@@ -54,7 +54,8 @@ exports.getEmployees = getEmployees;
 function addEmployee(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const user = yield adminServices.addEmployee(req.body);
+            const employee = yield adminServices.addEmployee(req.body);
+            res.status(200).json(employee);
         }
         catch (error) {
             res.status(400).json({ Message: "Error inserting employee" });
@@ -66,6 +67,7 @@ function updateEmployee(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const updateUser = yield adminServices.updateEmployee(req.body);
+            res.status(200).json(updateUser);
         }
         catch (error) {
             res.status(400).json({ Message: "Error updating user" });
