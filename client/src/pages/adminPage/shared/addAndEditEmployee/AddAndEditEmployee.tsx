@@ -13,12 +13,12 @@ import User from "../../../../types/User";
 
 export default function AddEmployee(props: any) {
   const [open, setOpen] = React.useState(true);
-  const [alert, setAlert] = React.useState(false);
+ // const [alert, setAlert] = React.useState(false);
 
   const request: string = props.request;
 
   const handleClose = () => {
-    setOpen(false);
+   // setOpen(false);
     props.onClose(alert);
   };
 
@@ -33,12 +33,11 @@ export default function AddEmployee(props: any) {
     salary: +(formData.get("salary") as string)}
 
     if(request==="add"){
-      console.log(employeeData);
     const employee: User | undefined = await adminRequests.addEmployee(employeeData);
     } else if(request==="edit"){
     const employee: User | undefined = await adminRequests.updateEmployee(employeeData);
     }
-    setAlert(true);
+    //setAlert(true);
     handleClose();
   }
 

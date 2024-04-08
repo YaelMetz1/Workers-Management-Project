@@ -15,13 +15,7 @@ export async function getAllUsers() {
   }
 }
 
-export async function addEmployee(employee: {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  jobId: number;
-  salary: number;
-}): Promise<User | undefined> {
+export async function addEmployee(employee: Partial<User>): Promise<User | undefined> {
   try {
     const response = await axios.post(
       API_URL + "/addEmployee",
@@ -35,13 +29,7 @@ export async function addEmployee(employee: {
   }
 }
 
-export async function updateEmployee(employee: {
-  name: string;
-  email: string;
-  phoneNumber: string;
-  jobId: number;
-  salary: number;
-}) : Promise<User|undefined>{
+export async function updateEmployee(employee: Partial<User>) : Promise<User|undefined>{
   try {
     const response: AxiosResponse = await axios.patch(
       API_URL + "/updateEmployee",

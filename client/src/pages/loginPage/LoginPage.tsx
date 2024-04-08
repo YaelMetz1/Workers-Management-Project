@@ -9,23 +9,11 @@ export default function LoginPage() {
   const navigate = useCustomNavigate();
 
   const { setUser } = useContext(UserContext);
-
-  const [emailAlert, setEmailAlert] = useState({
-    open: false,
-    message: ''
-  });
-  const [passwordAlert, setPasswordAlert] = useState({
-    open: false,
-    message: ''
-  });
   
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    setEmailAlert({open:false, message:''});
-    setPasswordAlert({open:false, message:''});
 
-    try{
     const userData: User | undefined = await userRequesrts.checkUserExists({
       email: formData.get("email") as string,
       password: formData.get("password") as string,
@@ -42,16 +30,8 @@ export default function LoginPage() {
     } else {
       setUser((userData as User) ?? null);
       navigate("/Home");
-    }}
-    catch(error: any){
-      console.error(error.response);
-      if(error.response?.data?.name === 'ZodError') {
-      setEmailAlert({open: true, message: error.response.data.issues[0].message});
-      setPasswordAlert({open: true, message: error.response.data.issues[1].message});
-
-      console.error(error);
-      }
     }
+
   };
 
   return (
@@ -65,8 +45,7 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
-        {emailAlert.open && <Alert severity="warning">{emailAlert.message}</Alert>}
-        {passwordAlert.open && <Alert severity="warning">{passwordAlert.message}</Alert>}
+
 
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
         <Typography component="h1" variant="h5">

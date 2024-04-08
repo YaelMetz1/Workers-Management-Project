@@ -31,7 +31,7 @@ export default function EmployeeCard(props: any) {
     setDialog(true);
   };
 
-  const handleToggleDialog = (openAlert: boolean) => {
+  const handleToggleDialog = () => {
     setDialog(!dialog);
     setRequestAction("");
    // if (openAlert) {

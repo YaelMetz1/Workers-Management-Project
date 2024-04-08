@@ -7,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import AddAndEditEmployee from "./shared/addAndEditEmployee/AddAndEditEmployee";
+import BaseLayout from "../../baseLayout/BaseLayout";
 
 
 export default function AdminPage() {
@@ -50,7 +51,7 @@ export default function AdminPage() {
     setDialog(true);
   }, []);
 
-  const handleToggleDialog = useCallback((openAlert: boolean) => {
+  const handleToggleDialog =(openAlert: boolean) => {
     setDialog(!dialog);
     setRequestAction("");
    // if (openAlert) {
@@ -59,9 +60,9 @@ export default function AdminPage() {
       //   setAlert({ open: false, message: "" });
       // }, 5000); // Close the alert after 5 seconds
  //   }
-  }, []);
+  };
 
-  return (
+  return (<BaseLayout>
 <Container
       sx={{
         pt: { xs: 4, sm: 12 },
@@ -90,17 +91,6 @@ export default function AdminPage() {
         <EmployeeCard key={index} page="admin" employee={employee}/>
       ))}
           </Grid>
-      {/* <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-      /> */}
-
       <Button startIcon={<AddIcon />} onClick={handleAdd}>Add Employee</Button>
       {dialog && <AddAndEditEmployee request={requestAction} employee={employeeDetails} onClose={handleToggleDialog} />}
 
@@ -110,6 +100,6 @@ export default function AdminPage() {
         </Alert>
       </Snackbar>}
       </Container>
-
+      </BaseLayout>
   );
 }
