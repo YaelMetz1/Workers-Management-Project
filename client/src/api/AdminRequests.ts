@@ -19,7 +19,7 @@ export async function addEmployee(employee: {
   name: string;
   email: string;
   phoneNumber: string;
-  jobTitle: string;
+  jobId: number;
   salary: number;
 }): Promise<User | undefined> {
   try {
@@ -39,7 +39,7 @@ export async function updateEmployee(employee: {
   name: string;
   email: string;
   phoneNumber: string;
-  jobTitle: string;
+  jobId: number;
   salary: number;
 }) : Promise<User|undefined>{
   try {

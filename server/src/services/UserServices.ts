@@ -1,4 +1,4 @@
-import prisma from "../Client"
+import prisma from "../db/Client"
 
 export async function getUser(userdetails: {
   email: string;

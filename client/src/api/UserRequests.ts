@@ -8,18 +8,13 @@ export async function checkUserExists(user: {
   password: string;
 }): Promise<User | undefined> {
 
-  try {
-    const response: AxiosResponse = await axios.post(
+    const response = await axios.post(
       API_URL + "/verification",
       user
     );
-
     if (response) {
       return response.data as User;
     }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
 }
 
 //An employee is registered in the system

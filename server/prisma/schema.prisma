@@ -23,6 +23,7 @@ model Employee {
   jobId        Int
   salary       Int
   isAdmin      Boolean          @default(false)
+  picture      String?
 }
 
 model Job {

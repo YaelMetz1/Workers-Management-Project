@@ -1,27 +1,31 @@
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import useCustomNavigate from "../../hooks/UseNavigate";
 import User from "../../types/User";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import * as userRequesrts from "../../api/UserRequests";
+import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from "@mui/material";
 
 export default function LoginPage() {
   const navigate = useCustomNavigate();
 
   const { setUser } = useContext(UserContext);
 
+  const [emailAlert, setEmailAlert] = useState({
+    open: false,
+    message: ''
+  });
+  const [passwordAlert, setPasswordAlert] = useState({
+    open: false,
+    message: ''
+  });
+  
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    setEmailAlert({open:false, message:''});
+    setPasswordAlert({open:false, message:''});
 
+    try{
     const userData: User | undefined = await userRequesrts.checkUserExists({
       email: formData.get("email") as string,
       password: formData.get("password") as string,
@@ -38,6 +42,15 @@ export default function LoginPage() {
     } else {
       setUser((userData as User) ?? null);
       navigate("/Home");
+    }}
+    catch(error: any){
+      console.error(error.response);
+      if(error.response?.data?.name === 'ZodError') {
+      setEmailAlert({open: true, message: error.response.data.issues[0].message});
+      setPasswordAlert({open: true, message: error.response.data.issues[1].message});
+
+      console.error(error);
+      }
     }
   };
 
@@ -52,6 +65,9 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
+        {emailAlert.open && <Alert severity="warning">{emailAlert.message}</Alert>}
+        {passwordAlert.open && <Alert severity="warning">{passwordAlert.message}</Alert>}
+
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
         <Typography component="h1" variant="h5">
           Sign in

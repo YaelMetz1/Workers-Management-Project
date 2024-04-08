@@ -1,11 +1,12 @@
 import express from "express";
-import * as adminController from "../controllers/AdminController";
+import AdminController from "../controllers/AdminController";
 
 const adminRoutes = express.Router();
+let employeeObject: AdminController = new AdminController();
 
-adminRoutes.get("/getEmployees", adminController.getEmployees);
-adminRoutes.post("/addEmployee", adminController.addEmployee);
-adminRoutes.patch("/updateEmployee", adminController.updateEmployee);
-adminRoutes.delete("/deleteEmployee/:id", adminController.deleteEmployee);
+adminRoutes.get("/getEmployees", employeeObject.getById);
+adminRoutes.post("/addEmployee", employeeObject.create);
+adminRoutes.patch("/updateEmployee", employeeObject.update);
+adminRoutes.delete("/deleteEmployee/:id", employeeObject.delete);
 
 export default adminRoutes;

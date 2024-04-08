@@ -8,21 +8,39 @@ import {
   Button,
   Dialog,
 } from "@mui/material";
-import * as adminRequests from "../../../../api/AdminRequests"
+import * as adminRequests from "../../../../api/AdminRequests";
 import User from "../../../../types/User";
 
 export default function AddEmployee(props: any) {
   const [open, setOpen] = React.useState(true);
+  const [alert, setAlert] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const request: string = props.request;
 
   const handleClose = () => {
     setOpen(false);
-    props.onClose();
+    props.onClose(alert);
   };
 
+  const handleSubmit=async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const employeeData= {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+    phoneNumber: formData.get("phoneNumber") as string,
+    jobId: +(formData.get("jobId") as string),
+    salary: +(formData.get("salary") as string)}
+
+    if(request==="add"){
+      console.log(employeeData);
+    const employee: User | undefined = await adminRequests.addEmployee(employeeData);
+    } else if(request==="edit"){
+    const employee: User | undefined = await adminRequests.updateEmployee(employeeData);
+    }
+    setAlert(true);
+    handleClose();
+  }
 
   return (
     <React.Fragment>
@@ -31,23 +49,10 @@ export default function AddEmployee(props: any) {
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            console.log("xcvbnm,");
-            const employee: User|undefined=await adminRequests.addEmployee({
-                name: formData.get("name") as string,
-                email: formData.get("email") as string,
-                phoneNumber: formData.get("phoneNumber") as string,
-                jobTitle: formData.get("jobTitle") as string,
-                salary: +(formData.get("salary") as string),
-              });
-              console.log(employee);
-            handleClose();
-          },
+          onSubmit: handleSubmit
         }}
       >
-        <DialogTitle>Add New Employee</DialogTitle>
+        <DialogTitle>{request==="add"? "Add New Employee": "Edit Employee Details"}</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <TextField
@@ -60,6 +65,7 @@ export default function AddEmployee(props: any) {
             type="name"
             fullWidth
             variant="standard"
+            defaultValue={request==="edit"? props.employee.name: ""}
           />
           <TextField
             autoFocus
@@ -71,6 +77,7 @@ export default function AddEmployee(props: any) {
             type="email"
             fullWidth
             variant="standard"
+            defaultValue={request==="edit"? props.employee.email: ""}
           />
           <TextField
             autoFocus
@@ -82,16 +89,18 @@ export default function AddEmployee(props: any) {
             type="phoneNumber"
             fullWidth
             variant="standard"
+            defaultValue={request==="edit"? props.employee.phoneNumber: ""}
           />
           <TextField
             autoFocus
             required
             margin="dense"
-            id="jobTitle"
-            name="jobTitle"
-            label="Job Title"
+            id="jobId"
+            name="jobId"
+            label="Job Id"
             fullWidth
             variant="standard"
+            defaultValue={request==="edit"? props.employee.jobId: ""}
           />
           <TextField
             autoFocus
@@ -102,6 +111,7 @@ export default function AddEmployee(props: any) {
             label="salary"
             fullWidth
             variant="standard"
+            defaultValue={request==="edit"? props.employee.salary: ""}
           />
         </DialogContent>
         <DialogActions>

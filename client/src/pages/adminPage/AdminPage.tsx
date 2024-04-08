@@ -1,83 +1,115 @@
-import React, {useEffect, useState} from "react";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import * as adminRequests from "../../api/AdminRequests"
-import EditEmployee from "./shared/editEmployee/EditEmployee"
-import AddEmployee from "./shared/addEmployee/AddEmployee";
+import React, { useCallback, useEffect, useState } from "react";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import * as adminRequests from "../../api/AdminRequests";
+import { Snackbar, Alert, Button, Typography, Box, Container, Grid } from "@mui/material";
+import EmployeeCard from "./shared/employeeCard/EmployeeCard" 
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import AddIcon from "@mui/icons-material/Add";
+import AddAndEditEmployee from "./shared/addAndEditEmployee/AddAndEditEmployee";
+
 
 export default function AdminPage() {
+  const [rows, setRows] = useState<any[]>([]); 
+  const [dialog, setDialog] = useState(false);
+  const [employeeDetails, setEmployeeDetails] = useState();
+  const [requestAction, setRequestAction] = useState("");
+  const [alert, setAlert] = useState({ open: false, message: "" });
 
+  // const columns: GridColDef[] = [
+  //   { field: "id", headerName: "ID", width: 100 },
+  //   { field: "name", headerName: "Name", width: 170 },
+  //   { field: "email", headerName: "Email", width: 200 },
+  //   { field: "phoneNumber", headerName: "PhoneNumber", width: 130 },
+  //   { field: "jobId", headerName: "jobId", width: 100 },
+  //   { field: "salary", headerName: "Salary", type: "number", width: 100 },
+  //   {
+  //     field: "actions",
+  //     headerName: "Actions",
+  //     width: 150,
+  //     renderCell: (params) => (
+  //       <div>
+  //         <Button startIcon={<EditIcon />} onClick={() => handleUpdate(params.row)}></Button>
+  //         <Button startIcon={<DeleteIcon />} onClick={() => handleDelete(params.row)}></Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
-
-  const [rows, setRows] = useState<any[]>([]); // Initialize rows state
-  const [editDialog, setEditDialog] =useState(false);
-  const [addDialog, setAddDialog] =useState(false);
-  const [userDetails, setUserDetails] =useState();
-
-
-const columns: GridColDef[]=[
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'name', headerName: 'Name', width: 170 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'phoneNumber', headerName: 'PhoneNumber', width: 130},
-    { field: 'jobTitle', headerName: 'JobTitle', width: 200},
-    { field: 'salary', headerName: 'Salary', type: 'number', width: 100},
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 150,
-      renderCell: (params) => (
-        <div>
-          <button onClick={() => handleUpdate(params.row)}>Update</button>
-          <button onClick={() => handleDelete(params.row.id)}>Delete</button>
-        </div>
-      ),
-    },
-  ];
-
-  const fetchData = async ()=> {
+  const fetchAndSetData = useCallback(async () => {
     const data = await adminRequests.getAllUsers();
-    setRows(data || []); 
-  }
+    setRows(data || []);
+  }, []);
 
   useEffect(() => {
-    fetchData(); 
-  }, []); 
-  
-  const handleUpdate = async (row: any) => {
-    setUserDetails(row);
-    setEditDialog(true);
-  };
+    fetchAndSetData();
+  }, [rows]);
 
-  const handleDelete = async (id: number) => {
-    await adminRequests.deleteEmployee(id);
-    fetchData();
-  };
+  const handleAdd = useCallback(async (row: any) => {
+    setRequestAction("add");
+    setDialog(true);
+  }, []);
 
-  const handleToggleAddDialog = () => {
-    setAddDialog(!addDialog);
-    fetchData();
-  };
+  const handleToggleDialog = useCallback((openAlert: boolean) => {
+    setDialog(!dialog);
+    setRequestAction("");
+   // if (openAlert) {
+      // setAlert({ open: true, message: "New employee successfully added" });
+      // setTimeout(() => {
+      //   setAlert({ open: false, message: "" });
+      // }, 5000); // Close the alert after 5 seconds
+ //   }
+  }, []);
 
-  const handleToggleEditDialog = () => {
-    setEditDialog(!editDialog);
-    fetchData();
-  };
+  return (
+<Container
+      sx={{
+        pt: { xs: 4, sm: 12 },
+        pb: { xs: 8, sm: 16 },
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 3, sm: 6 },
+      }}
+    >
+      <Box
+        sx={{
+          width: { sm: '100%', md: '60%' },
+          textAlign: { sm: 'left', md: 'center' },
+        }}
+      >
+               <Typography component="h2" variant="h4" color="text.primary">
+          Employees
+        </Typography> 
+      </Box>
+            
 
-    return (
-    <div>
-      <DataGrid
+        <Grid container spacing={2}>
+      {rows.map((employee, index)=>(
+        <EmployeeCard key={index} page="admin" employee={employee}/>
+      ))}
+          </Grid>
+      {/* <DataGrid
         rows={rows}
         columns={columns}
-        // initialState={{
-        //   pagination: {
-        //     paginationModel: { page: 0, pageSize: 5 },
-        //   },
-        // }}
-        // pageSizeOptions={[5, 10]}
-      />
-      <button onClick={() => setAddDialog(true)}>Add Employee</button>
-      {addDialog && <AddEmployee onClose={handleToggleAddDialog} />}
-      {editDialog && <EditEmployee user={userDetails} onClose={handleToggleEditDialog} />}
-      </div>)
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+      /> */}
 
-} 
+      <Button startIcon={<AddIcon />} onClick={handleAdd}>Add Employee</Button>
+      {dialog && <AddAndEditEmployee request={requestAction} employee={employeeDetails} onClose={handleToggleDialog} />}
+
+      {<Snackbar open={alert.open} autoHideDuration={5000}>
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>}
+      </Container>
+
+  );
+}
