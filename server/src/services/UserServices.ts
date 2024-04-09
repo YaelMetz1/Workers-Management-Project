@@ -26,6 +26,5 @@ export async function updateUserPassword(userdetails: {
         password: userdetails.password,
       },
     });
-    return user;
-
+    return user
 }

@@ -4,10 +4,7 @@ import { AnyZodObject, z } from "zod";
 export const dataSchema = z.object({
     body: z.object({
       email: z.string()
-      .min(1, "Email is required and cannot be empty")
       .email("Not a valid email"),
-      password: z.string()
-      .min(1, "Password is required and cannot be empty"),
     }),
   });
 

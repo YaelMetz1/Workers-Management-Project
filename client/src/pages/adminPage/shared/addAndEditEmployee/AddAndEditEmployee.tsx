@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   DialogTitle,
   DialogContent,
@@ -7,39 +7,65 @@ import {
   DialogActions,
   Button,
   Dialog,
+  InputLabel,
+  MenuItem,
+  Select,
+  FormControl,
 } from "@mui/material";
 import * as adminRequests from "../../../../api/AdminRequests";
-import User from "../../../../types/User";
+import User from "../../../../types/Employee";
+import * as jobRequests from "../../../../api/JobRequests";
+import Job from "../../../../types/Job";
 
-export default function AddEmployee(props: any) {
+export default function AddandEditEmployee(props: any) {
   const [open, setOpen] = React.useState(true);
- // const [alert, setAlert] = React.useState(false);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [job, setJob] = useState<Job>();
 
   const request: string = props.request;
 
+  const fetchAndSetData = useCallback(async () => {
+    const jobs = await jobRequests.getAllJobs();
+    setJobs(jobs || []);
+
+    if (request === "edit") {
+      const job = await jobRequests.getJob(+props.employee.jobId);
+      setJob(job);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAndSetData();
+  }, []);
+
   const handleClose = () => {
-   // setOpen(false);
+    setOpen(false);
     props.onClose(alert);
   };
 
-  const handleSubmit=async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const employeeData= {
-    name: formData.get("name") as string,
-    email: formData.get("email") as string,
-    phoneNumber: formData.get("phoneNumber") as string,
-    jobId: +(formData.get("jobId") as string),
-    salary: +(formData.get("salary") as string)}
+    const employeeData = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phoneNumber: formData.get("phoneNumber") as string,
+      jobId: job?.id,
+      salary: +(formData.get("salary") as string),
+      picture: formData.get("picture") as string,
+    };
 
-    if(request==="add"){
-    const employee: User | undefined = await adminRequests.addEmployee(employeeData);
-    } else if(request==="edit"){
-    const employee: User | undefined = await adminRequests.updateEmployee(employeeData);
+    if (request === "add") {
+      const employee: User | undefined = await adminRequests.addEmployee(
+        employeeData
+      );
+    } else if (request === "edit") {
+      const employee: User | undefined = await adminRequests.updateEmployee(
+        employeeData
+      );
     }
-    //setAlert(true);
     handleClose();
-  }
+  };
 
   return (
     <React.Fragment>
@@ -48,10 +74,12 @@ export default function AddEmployee(props: any) {
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: handleSubmit
+          onSubmit: handleSubmit,
         }}
       >
-        <DialogTitle>{request==="add"? "Add New Employee": "Edit Employee Details"}</DialogTitle>
+        <DialogTitle>
+          {request === "add" ? "Add New Employee" : "Edit Employee Details"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <TextField
@@ -64,7 +92,7 @@ export default function AddEmployee(props: any) {
             type="name"
             fullWidth
             variant="standard"
-            defaultValue={request==="edit"? props.employee.name: ""}
+            defaultValue={request === "edit" ? props.employee.name : ""}
           />
           <TextField
             autoFocus
@@ -76,7 +104,7 @@ export default function AddEmployee(props: any) {
             type="email"
             fullWidth
             variant="standard"
-            defaultValue={request==="edit"? props.employee.email: ""}
+            defaultValue={request === "edit" ? props.employee.email : ""}
           />
           <TextField
             autoFocus
@@ -88,19 +116,34 @@ export default function AddEmployee(props: any) {
             type="phoneNumber"
             fullWidth
             variant="standard"
-            defaultValue={request==="edit"? props.employee.phoneNumber: ""}
+            defaultValue={request === "edit" ? props.employee.phoneNumber : ""}
           />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="jobId"
-            name="jobId"
-            label="Job Id"
-            fullWidth
-            variant="standard"
-            defaultValue={request==="edit"? props.employee.jobId: ""}
-          />
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="demo-simple-select-label">Job</InputLabel>
+            <Select
+              id="job"
+              name="job"
+              label="Job"
+              value={
+                request === "edit" && job
+                  ? `${jobs.findIndex(
+                      (j) =>
+                        j.title === job.title &&
+                        j.department === job.department &&
+                        j.location === job.location
+                    )}`
+                  : ""
+              }
+            >
+              {jobs.map((job, id) => {
+                return (
+                  <MenuItem key={id} value={id}>
+                    {job.title + ", " + job.department + ", " + job.location}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
           <TextField
             autoFocus
             required
@@ -110,7 +153,19 @@ export default function AddEmployee(props: any) {
             label="salary"
             fullWidth
             variant="standard"
-            defaultValue={request==="edit"? props.employee.salary: ""}
+            defaultValue={request === "edit" ? props.employee.salary : ""}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="picture"
+            name="picture"
+            label="picture"
+            type="picture"
+            fullWidth
+            variant="standard"
+            defaultValue={request === "edit" ? props.employee.picture : ""}
           />
         </DialogContent>
         <DialogActions>

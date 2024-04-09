@@ -1,35 +1,35 @@
 import axios, { AxiosResponse } from "axios";
-import User from "../types/User";
+import Employee from "../types/Employee";
 
 const API_URL = "http://localhost:4000/api/admin";
 
-export async function getAllUsers() {
+export async function getAllEmployees() {
   try {
     const response = await axios.get(API_URL + "/getEmployees");
 
     if (response) {
-      return response.data as User[];
+      return response.data as Employee[];
     }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
-export async function addEmployee(employee: Partial<User>): Promise<User | undefined> {
+export async function addEmployee(employee: Partial<Employee>): Promise<Employee | undefined> {
   try {
     const response = await axios.post(
       API_URL + "/addEmployee",
       employee
     );
     if (response) {
-      return response.data as User;
+      return response.data as Employee;
     }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
-export async function updateEmployee(employee: Partial<User>) : Promise<User|undefined>{
+export async function updateEmployee(employee: Partial<Employee>): Promise<Employee | undefined> {
   try {
     const response: AxiosResponse = await axios.patch(
       API_URL + "/updateEmployee",
@@ -37,7 +37,7 @@ export async function updateEmployee(employee: Partial<User>) : Promise<User|und
     );
 
     if (response) {
-      return response.data as User;
+      return response.data as Employee;
     }
   } catch (error) {
     console.error("Error fetching data:", error);

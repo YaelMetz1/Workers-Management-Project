@@ -1,10 +1,11 @@
-export default interface User{
+export default interface Employee{
     id: number,
     name: string,
     email: string,
     password: string,
     phoneNumber: string,
-    jobId: number;
+    jobId: number,
     salary: number,
-    isAdmin: boolean
+    isAdmin: boolean,
+    picture: string
 }

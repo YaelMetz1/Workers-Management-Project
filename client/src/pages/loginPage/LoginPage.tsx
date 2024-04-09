@@ -1,15 +1,25 @@
 import useCustomNavigate from "../../hooks/UseNavigate";
-import User from "../../types/User";
+import User from "../../types/Employee";
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import * as userRequesrts from "../../api/UserRequests";
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  CssBaseline,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 export default function LoginPage() {
   const navigate = useCustomNavigate();
 
   const { setUser } = useContext(UserContext);
-  
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -31,7 +41,6 @@ export default function LoginPage() {
       setUser((userData as User) ?? null);
       navigate("/Home");
     }
-
   };
 
   return (
@@ -45,26 +54,25 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
-
-
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
-            margin="normal"
+            autoFocus
             required
+            margin="normal"
             fullWidth
             id="email"
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
           />
           <TextField
-            margin="normal"
+            autoFocus
             required
+            margin="normal"
             fullWidth
             name="password"
             label="Password"

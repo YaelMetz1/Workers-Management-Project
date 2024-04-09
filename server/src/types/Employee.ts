@@ -4,7 +4,7 @@ export default interface Employee{
     email: string,
     password: string,
     phoneNumber: string,
-    jobId: number;
+    jobId: number,
     salary: number,
     isAdmin: boolean,
     picture: string

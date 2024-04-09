@@ -1,15 +1,8 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import * as userRequests from "../../api/UserRequests";
 import useCustomNavigate from "../../hooks/UseNavigate";
-import User from "../../types/User";
+import User from "../../types/Employee";
+import { Container, CssBaseline, Box, Avatar, Typography, Grid, TextField, Button } from "@mui/material";
 
 export default function RegisterPage() {
   const navigate = useCustomNavigate();

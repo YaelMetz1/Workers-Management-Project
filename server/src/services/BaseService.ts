@@ -1,5 +1,5 @@
 import prisma from "../db/Client"
-import  {GeneralType}  from "../types/generalType/GeneralType";
+import  {GeneralType}  from "../types/GeneralType";
 
 
 export default abstract class BaseService<T extends GeneralType>{
